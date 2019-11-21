@@ -2,6 +2,8 @@
 
 require dirname(__FILE__) . '/index.domains.php';
 
+$domains = array_unique($domains);
+
 foreach ($domains as $domain) {
     echo $domain;
 
