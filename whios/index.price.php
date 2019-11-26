@@ -81,11 +81,11 @@ function getPrice($domain, $currency = 'USD')
 
         if (!$return) {
             sleep(5);
-            return getPrice($domain);
+            return getPrice($domain, $currency);
         }
     }
 
-    if ($currency = 'RMB') {
+    if ($currency == 'RMB') {
         $url = 'http://www.wanmi.cc/gj/' . $domain;
         $output = do_request($url, [], false, []);
         $regex4="/<div class=\"gujia\".*?>.*?<\/div>/ism"; 
