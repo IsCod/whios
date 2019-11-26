@@ -83,8 +83,6 @@ function getPrice($domain, $currency = 'USD')
             sleep(5);
             return getPrice($domain);
         }
-
-        return $return;
     }
 
     if ($currency = 'RMB') {
@@ -93,20 +91,16 @@ function getPrice($domain, $currency = 'USD')
         $regex4="/<div class=\"gujia\".*?>.*?<\/div>/ism"; 
         if(preg_match_all($regex4, $output, $matches)){ 
             preg_match('/(¥)(.*)(元)/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
-
             $return = $return[2][0] ?? '0';
         }else{ 
            $return = '0'; 
         }
-
-        return trim($return);
     }
+    return trim($return);
 }
 
 function do_request($url, $params = [], $is_post = false, $headers = [], $is_put = false)
 {
-
-
     if (!$is_post && !$is_put) {
         if ($params) {
             $p_str = '';
