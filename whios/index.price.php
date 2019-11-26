@@ -7,8 +7,9 @@ $domains = array_unique($domains);
 foreach ($domains as $domain) {
     echo $domain;
 
-    $price = getPrice($domain);
-    echo "\tprice : " . $price;
+    $price = getPrice($domain, 'USD');
+    $price_cn = getPrice($domain, 'RMB');
+    echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
     echo "\n";
 }
 die();
@@ -58,34 +59,53 @@ function Rand_IP()
     return $ip1id . "." . $ip2id . "." . $ip3id . "." . $ip4id;
 }
 
-function getPrice($domain)
+function getPrice($domain, $currency = 'USD')
 {
     $ip = Rand_IP();
 
-    $headers = [
-        'Accept: application/json, text/plain',
-        'Origin: https://sg.godaddy.com',
-        // 'Referer: https://sg.godaddy.com/zh/domain-value-appraisal/appraisal/?isc=cjc999com&checkAvail=1&tmskey=&domainToCheck=c' . $domain,
-        'Sec-Fetch-Mode: cors',
-        'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
-        // 'X-DataCenter: PHX3',
-        // 'X-Request-Id: ' . md5($Domain)
-    ];
+    if($currency == 'USD') {
+        $headers = [
+            'Accept: application/json, text/plain',
+            'Origin: https://sg.godaddy.com',
+            // 'Referer: https://sg.godaddy.com/zh/domain-value-appraisal/appraisal/?isc=cjc999com&checkAvail=1&tmskey=&domainToCheck=c' . $domain,
+            'Sec-Fetch-Mode: cors',
+            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+            // 'X-DataCenter: PHX3',
+            // 'X-Request-Id: ' . md5($Domain)
+        ];
 
-    $price = do_request($domain, [], false, $headers);
-    $return = $price['govalue'] ?? '';
+        $url = "https://api.godaddy.com/v1/appraisal/" . $domain;
 
-    if (!$return) {
-        sleep(5);
-        return getPrice($domain);
+        $price = do_request($url, [], false, $headers);
+        $return = $price['govalue'] ?? '';
+
+        if (!$return) {
+            sleep(5);
+            return getPrice($domain);
+        }
+
+        return $return;
     }
 
-    return $return;
+    if ($currency = 'RMB') {
+        $url = 'http://www.wanmi.cc/gj/' . $domain;
+        $output = do_request($url, [], false, []);
+        $regex4="/<div class=\"gujia\".*?>.*?<\/div>/ism"; 
+        if(preg_match_all($regex4, $output, $matches)){ 
+            preg_match('/(¥)(.*)(元)/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
+
+            $return = $return[2][0] ?? '0';
+        }else{ 
+           $return = '0'; 
+        }
+
+        return trim($return);
+    }
 }
 
-function do_request($domain, $params = [], $is_post = false, $headers = [], $is_put = false)
+function do_request($url, $params = [], $is_post = false, $headers = [], $is_put = false)
 {
-    $url = "https://api.godaddy.com/v1/appraisal/" . $domain;
+
 
     if (!$is_post && !$is_put) {
         if ($params) {
@@ -127,7 +147,7 @@ function do_request($domain, $params = [], $is_post = false, $headers = [], $is_
 
     if ($output === false) {
         // error log
-        print_r($error);
+        // print_r($error);
         // die();
     }
     curl_close($ch);
