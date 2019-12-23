@@ -12,7 +12,7 @@ function gethtml(){
     CURLOPT_TIMEOUT => 30,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => "ymlx=53&ymhz=com&api_sou=1&jgpx=1&meiye=200",
+    CURLOPT_POSTFIELDS => "ymlx=53&ymhz=com&api_sou=1&jgpx=1&meiye=100",
     CURLOPT_HTTPHEADER => array(
       "Cache-Control: no-cache",
       "Content-Type: application/x-www-form-urlencoded",
@@ -81,11 +81,11 @@ preg_match_all($pattern, $html, $matches);
 $domains = $matches[1] ?? [];
 
 $domains = array_unique($domains);
-
 $amHtml = getamHtml();
 $amHtml = json_decode($amHtml, true);
+
 foreach ($amHtml['data'] as $key => $value) {
-    $domains[] = trim($value['Domains'], ".com");
+    $domains[] = str_replace(".com", '', $value['Domain']);
 }
 
 foreach ($domains as $domain) {
