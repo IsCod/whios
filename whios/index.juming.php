@@ -33,6 +33,38 @@ function gethtml(){
   }
 }
 
+function getamHtml() {
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => "https://am.22.cn/ajax/yikoujia/default.ashx?t=0.03460796503984187",
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a",
+      CURLOPT_HTTPHEADER => array(
+        "Cache-Control: no-cache",
+        "Content-Type: application/x-www-form-urlencoded",
+        "Postman-Token: 250e699b-ca32-d557-43b0-72c95b2b02b5"
+      ),
+    ));
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+      echo "cURL Error #:" . $err;
+      die();
+    } else {
+      return $response;
+    }
+}
+
 function strToUtf8($str){
     $encode = mb_detect_encoding($str, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'));
     if($encode == 'UTF-8'){
@@ -49,6 +81,12 @@ preg_match_all($pattern, $html, $matches);
 $domains = $matches[1] ?? [];
 
 $domains = array_unique($domains);
+
+$amHtml = getamHtml();
+$amHtml = json_decode($amHtml, true);
+foreach ($amHtml['data'] as $key => $value) {
+    $domains[] = trim($value['Domains'], ".com");
+}
 
 foreach ($domains as $domain) {
     $domain .= ".com";
