@@ -12,7 +12,7 @@ function gethtml(){
     CURLOPT_TIMEOUT => 30,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => "ymlx=53&ymhz=com&api_sou=1&jgpx=1",
+    CURLOPT_POSTFIELDS => "ymlx=53&ymhz=com&api_sou=1&jgpx=1&meiye=200",
     CURLOPT_HTTPHEADER => array(
       "Cache-Control: no-cache",
       "Content-Type: application/x-www-form-urlencoded",
