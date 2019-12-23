@@ -65,6 +65,37 @@ function getamHtml() {
     }
 }
 
+function getenameHtml(){
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => "https://auction.ename.com/tao/buynow?domain=2&domainsld=&transtype=1&sort=2&bidpricestart=0&bidpriceend=&skipword1=&domaingroup=11&domaintld[0]=1&domainlenstart=1&domainlenend=&shopUid=&registrar=0&regtime=0&finishtime=0&exptime=0&current=yikoujia&pageSize=100&name=&domaintld%5B0%5D=1",
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "Cache-Control: no-cache",
+        "Postman-Token: 1adf6597-e07d-e542-f6d0-4e9439f4ca56",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+      ),
+    ));
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+      echo "cURL Error #:" . $err;
+      die();
+    } else {
+      return $response;
+    }
+}
+
 function strToUtf8($str){
     $encode = mb_detect_encoding($str, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'));
     if($encode == 'UTF-8'){
@@ -77,9 +108,15 @@ function strToUtf8($str){
 $html = gethtml();
 $pattern = '/>([a-z]{4})\.com<\/a>/';
 preg_match_all($pattern, $html, $matches);
+$ju_domains = $matches[1] ?? [];
+$ju_domains = array_unique($ju_domains);
 
-$domains = $matches[1] ?? [];
-$domains = array_unique($domains);
+$html = getenameHtml();
+$pattern = '/<span>([a-z]{4})\.com<\/span>/';
+preg_match_all($pattern, $html, $matches);
+$en_domains = $matches[1] ?? [];
+$domains = array_merge($ju_domains, $en_domains);
+
 $amHtml = getamHtml();
 $amHtml = json_decode($amHtml, true);
 
