@@ -44,7 +44,7 @@ function getamHtml() {
       CURLOPT_TIMEOUT => 30,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "POST",
-      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a",
+      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a&pageCount=100",
       CURLOPT_HTTPHEADER => array(
         "Cache-Control: no-cache",
         "Content-Type: application/x-www-form-urlencoded",
@@ -79,7 +79,6 @@ $pattern = '/>([a-z]{4})\.com<\/a>/';
 preg_match_all($pattern, $html, $matches);
 
 $domains = $matches[1] ?? [];
-
 $domains = array_unique($domains);
 $amHtml = getamHtml();
 $amHtml = json_decode($amHtml, true);
