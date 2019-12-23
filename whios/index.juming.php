@@ -44,7 +44,7 @@ function getamHtml() {
       CURLOPT_TIMEOUT => 30,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "POST",
-      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a&pageCount=100",
+      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a&pageCount=150",
       CURLOPT_HTTPHEADER => array(
         "Cache-Control: no-cache",
         "Content-Type: application/x-www-form-urlencoded",
