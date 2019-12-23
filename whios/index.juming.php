@@ -55,6 +55,7 @@ foreach ($domains as $domain) {
     echo $domain;
     $price = getPrice($domain, 'USD');
     $price_cn = getPrice($domain, 'RMB');
+    $price_cn = str_replace(',', '', $price_cn);
     echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
     echo "\n";
 }
