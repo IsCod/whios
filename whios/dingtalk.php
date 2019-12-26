@@ -2,7 +2,7 @@
 
 function sendDingTalk(string $content, $access_token = "05538a32e1d0b0ca72e0659aadc846b8bba4176365cc7d918a0bd316ed04c554"){
     $message = [
-        "msgtype" => "markdown",
+        "msgtype" => "text",
         "text" => ["content" => $content]
     ];
 
