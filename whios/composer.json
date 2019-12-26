@@ -10,5 +10,11 @@
   "autoload": {
   },
   "require-dev": {
-  }
+  },
+  "repositories": {
+    "packagist": {
+        "type": "composer",
+        "url": "https://packagist.phpcomposer.com"
+    }
+}
 }
