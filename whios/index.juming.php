@@ -1,6 +1,47 @@
 <?php
 require dirname(__FILE__) . '/dingtalk.php';
 
+while (true) {
+    start();
+}
+
+function start(){
+    $html = gethtml();
+    $pattern = '/>([a-z]{4})\.com<\/a>/';
+    preg_match_all($pattern, $html, $matches);
+    $ju_domains = $matches[1] ?? [];
+    $ju_domains = array_unique($ju_domains);
+
+    $html = getenameHtml();
+    $pattern = '/<span>([a-z]{4})\.com<\/span>/';
+    preg_match_all($pattern, $html, $matches);
+    $en_domains = $matches[1] ?? [];
+    $domains = array_merge($ju_domains, $en_domains);
+
+    $amHtml = getamHtml();
+    $amHtml = json_decode($amHtml, true);
+
+    foreach ($amHtml['data'] as $key => $value) {
+        $domains[] = str_replace(".com", '', $value['Domain']);
+    }
+
+    foreach ($domains as $domain) {
+        $domain .= ".com";
+        echo $domain;
+        $price = getPrice($domain, 'USD');
+        $price_cn = getPrice($domain, 'RMB');
+        $price_cn = str_replace(',', '', $price_cn);
+        echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
+        echo "\n";
+
+        if ($price > 1000 and $price_cn > 1000) {
+            $send_msg = $domain . " USD: " . $price . " RMD: " . $price_cn; 
+            sendDingTalk($send_msg);
+        }
+    }
+}
+
+
 function gethtml(){
 
   $curl = curl_init();
@@ -105,41 +146,6 @@ function strToUtf8($str){
         return mb_convert_encoding($str, 'UTF-8', $encode);
     }
 }
-
-$html = gethtml();
-$pattern = '/>([a-z]{4})\.com<\/a>/';
-preg_match_all($pattern, $html, $matches);
-$ju_domains = $matches[1] ?? [];
-$ju_domains = array_unique($ju_domains);
-
-$html = getenameHtml();
-$pattern = '/<span>([a-z]{4})\.com<\/span>/';
-preg_match_all($pattern, $html, $matches);
-$en_domains = $matches[1] ?? [];
-$domains = array_merge($ju_domains, $en_domains);
-
-$amHtml = getamHtml();
-$amHtml = json_decode($amHtml, true);
-
-foreach ($amHtml['data'] as $key => $value) {
-    $domains[] = str_replace(".com", '', $value['Domain']);
-}
-
-foreach ($domains as $domain) {
-    $domain .= ".com";
-    echo $domain;
-    $price = getPrice($domain, 'USD');
-    $price_cn = getPrice($domain, 'RMB');
-    $price_cn = str_replace(',', '', $price_cn);
-    echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
-    echo "\n";
-
-    if ($price > 1000 and $price_cn > 1000) {
-        $send_msg = $domain . " USD: " . $price . " RMD: " . $price_cn; 
-        sendDingTalk($send_msg);
-    }
-}
-die();
 
 function Rand_IP()
 {
