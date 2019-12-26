@@ -34,7 +34,7 @@ function start(){
         echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
         echo "\n";
 
-        if ($price > 1000 and $price_cn > 1000) {
+        if ($price > 1500 and $price_cn > 2000) {
             $send_msg = $domain . " USD: " . $price . " RMB: " . $price_cn; 
             sendDingTalk($send_msg);
         }
