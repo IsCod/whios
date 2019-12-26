@@ -16,7 +16,7 @@ function sendDingTalk(string $content, $access_token = "05538a32e1d0b0ca72e0659a
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_HEADER => "",
 		CURLOPT_CUSTOMREQUEST => "POST",
-		CURLOPT_POSTFIELDS => json_encode($message);
+		CURLOPT_POSTFIELDS => json_encode($message),
 		CURLOPT_HTTPHEADER => array(
 		    "Content-Type: application/json",
 		  ),
