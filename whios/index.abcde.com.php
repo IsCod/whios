@@ -43,7 +43,7 @@ function checkPrice(string $domain){
     // echo $domain ."\tprice, USD : " . $price . "\t RMB : " . $price_cn;
     // echo "\n";
 
-    if ($price > 2000 and $price_cn > 2000) {
+    if ($price >= 1500 and $price_cn >= 2000) {
         $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
         sendDingTalk($send_msg);
     }
