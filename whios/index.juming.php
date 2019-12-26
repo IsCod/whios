@@ -135,7 +135,7 @@ foreach ($domains as $domain) {
     echo "\n";
 
     if ($price > 1000 and $price_cn > 1000) {
-        $send_msg = $domain . " USD: " . $price . "RMD: " . $price_cn . "RMB"; 
+        $send_msg = $domain . " USD: " . $price . " RMD: " . $price_cn; 
         sendDingTalk($send_msg);
     }
 }
