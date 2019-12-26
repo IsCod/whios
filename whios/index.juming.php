@@ -1,4 +1,5 @@
 <?php
+require dirname(__FILE__) . '/dingtalk.php';
 
 function gethtml(){
 
@@ -132,6 +133,11 @@ foreach ($domains as $domain) {
     $price_cn = str_replace(',', '', $price_cn);
     echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
     echo "\n";
+
+    if ($price > 1000 and $price_cn > 1000) {
+        $send_msg = $domain . "price: " . $price . " USD, " . "price_cn: " . $price_cn . "RMB"; 
+        sendDingTalk($send_msg);
+    }
 }
 die();
 
