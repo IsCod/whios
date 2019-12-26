@@ -39,6 +39,8 @@ function start(){
             sendDingTalk($send_msg);
         }
     }
+
+    sleep(60);
 }
 
 
