@@ -47,6 +47,12 @@ function checkPrice(string $domain){
         $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
         sendDingTalk($send_msg);
     }
+
+    if ($price >= 10000 || $price_cn >= 100000) {
+        $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
+        sendDingTalk($send_msg);
+    }
+
 }
 
 
