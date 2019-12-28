@@ -43,12 +43,13 @@ function checkPrice(string $domain){
     // echo $domain ."\tprice, USD : " . $price . "\t RMB : " . $price_cn;
     // echo "\n";
 
-    if ($price >= 1500 and $price_cn >= 200) {
+    if ($price >= 1000 and $price_cn >= 200) {
         $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
         sendDingTalk($send_msg);
     }
 
-    if ($price >= 2000 || $price_cn >= 100) {
+    $price_s = ($price * 0.4) + ($price_cn * 0.6);
+    if ($price_s > 800) {
         $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
         sendDingTalk($send_msg);
     }
