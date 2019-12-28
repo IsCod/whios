@@ -305,6 +305,10 @@ function getStatus($data)
         return $data['regrinfo']['registered'];
     }
 
+    if (!is_array($data['rawdata'])) {
+        return false;
+    }
+
     foreach ($data['rawdata'] as $str) {
         $arr = preg_split("/: +/", $str);
 
