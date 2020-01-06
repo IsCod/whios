@@ -33,9 +33,14 @@ function start(){
         if ($price_cn >= 2100) {
             $price = getPrice($domain, 'USD');
             echo "\tprice, USD : " . $price;
-            if ($price >= 1500 and $price_cn >= 2000) {
+            if ($price_cn >= 5000) {
                 $send_msg = $domain . " USD: " . $price . " RMB: " . $price_cn; 
                 sendDingTalk($send_msg);
+            }else{
+                if ($price >= 1500 and $price_cn >= 2000) {
+                    $send_msg = $domain . " USD: " . $price . " RMB: " . $price_cn; 
+                    sendDingTalk($send_msg);
+                }
             }
         }
 
