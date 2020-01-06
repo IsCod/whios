@@ -23,6 +23,8 @@ function start(){
         $domains[] = str_replace(".com", '', $value['Domain']);
     }
 
+    $domains = array_unique($domains);
+
     foreach ($domains as $domain) {
         $domain .= ".com";
         echo $domain;
