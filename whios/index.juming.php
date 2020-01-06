@@ -1,9 +1,7 @@
 <?php
 require dirname(__FILE__) . '/dingtalk.php';
 
-while (true) {
-    start();
-}
+start();
 
 function start(){
     $html = gethtml();
@@ -28,16 +26,20 @@ function start(){
     foreach ($domains as $domain) {
         $domain .= ".com";
         echo $domain;
-        $price = getPrice($domain, 'USD');
+
         $price_cn = getPrice($domain, 'RMB');
         $price_cn = str_replace(',', '', $price_cn);
-        echo "\tprice, USD : " . $price . "\t RMB : " . $price_cn;
-        echo "\n";
-
-        if ($price >= 1500 and $price_cn >= 2000) {
-            $send_msg = $domain . " USD: " . $price . " RMB: " . $price_cn; 
-            sendDingTalk($send_msg);
+        echo "\tprice, RMB : " . $price_cn;
+        if ($price_cn >= 2100) {
+            $price = getPrice($domain, 'USD');
+            echo "\tprice, USD : " . $price;
+            if ($price >= 1500 and $price_cn >= 2000) {
+                $send_msg = $domain . " USD: " . $price . " RMB: " . $price_cn; 
+                sendDingTalk($send_msg);
+            }
         }
+
+        echo "\n";
     }
 
     sleep(60);
