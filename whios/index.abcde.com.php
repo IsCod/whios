@@ -37,119 +37,12 @@ function start(){
 }
 
 function checkPrice(string $domain){
-    $price = getPrice($domain, 'USD');
     $price_cn = getPrice($domain, 'RMB');
     $price_cn = str_replace(',', '', $price_cn);
-    // echo $domain ."\tprice, USD : " . $price . "\t RMB : " . $price_cn;
-    // echo "\n";
-
-    if ($price >= 1000 and $price_cn >= 200) {
+    if ($price_cn >= 400) {
+        $price = getPrice($domain, 'USD');
         $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
         sendDingTalk($send_msg);
-    }
-
-    $price_s = ($price * 0.4) + ($price_cn * 0.6);
-    if ($price_s > 800) {
-        $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
-        sendDingTalk($send_msg);
-    }
-
-}
-
-
-function gethtml(){
-
-  $curl = curl_init();
-
-  curl_setopt_array($curl, array(
-    CURLOPT_URL => "http://www.juming.com/ykj/",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => "",
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => "ymlx=53&ymhz=com&api_sou=1&jgpx=1&meiye=100",
-    CURLOPT_HTTPHEADER => array(
-      "Cache-Control: no-cache",
-      "Content-Type: application/x-www-form-urlencoded",
-      "Postman-Token: d142bddb-9afc-14fc-d925-8a6fe93f7a89"
-    ),
-  ));
-
-  $response = curl_exec($curl);
-  $err = curl_error($curl);
-
-  curl_close($curl);
-
-  if ($err) {
-    echo "cURL Error #:" . $err;
-    die();
-  } else {
-    return html_entity_decode($response);
-  }
-}
-
-function getamHtml() {
-    $curl = curl_init();
-
-    curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://am.22.cn/ajax/yikoujia/default.ashx?t=0.03460796503984187",
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => "",
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 30,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => "POST",
-      CURLOPT_POSTFIELDS => "ddlSuf=.com&ddlclass=11&orderby=Price_a&pageCount=150",
-      CURLOPT_HTTPHEADER => array(
-        "Cache-Control: no-cache",
-        "Content-Type: application/x-www-form-urlencoded",
-        "Postman-Token: 250e699b-ca32-d557-43b0-72c95b2b02b5"
-      ),
-    ));
-
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-
-    curl_close($curl);
-
-    if ($err) {
-      echo "cURL Error #:" . $err;
-      die();
-    } else {
-      return $response;
-    }
-}
-
-function getenameHtml(){
-    $curl = curl_init();
-
-    curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://auction.ename.com/tao/buynow?domain=2&domainsld=&transtype=1&sort=2&bidpricestart=0&bidpriceend=&skipword1=&domaingroup=11&domaintld[0]=1&domainlenstart=1&domainlenend=&shopUid=&registrar=0&regtime=0&finishtime=0&exptime=0&current=yikoujia&pageSize=100&name=&domaintld%5B0%5D=1",
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => "",
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 30,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => "GET",
-      CURLOPT_HTTPHEADER => array(
-        "Cache-Control: no-cache",
-        "Postman-Token: 1adf6597-e07d-e542-f6d0-4e9439f4ca56",
-        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
-      ),
-    ));
-
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-
-    curl_close($curl);
-
-    if ($err) {
-      echo "cURL Error #:" . $err;
-      die();
-    } else {
-      return $response;
     }
 }
 
