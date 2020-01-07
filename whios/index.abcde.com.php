@@ -22,7 +22,7 @@ function start(){
                         $status = getStatus($result);
                         if (!$status) {
                             //在尝试一次
-                            $result = $whois->lookup($domain_suf);
+                            $result = $whois->lookup($domain);
                             $status = getStatus($result);
                         }
                         if ($status == 'no' || $status == 'NO') {
@@ -39,10 +39,12 @@ function start(){
 function checkPrice(string $domain){
     $price_cn = getPrice($domain, 'RMB');
     $price_cn = str_replace(',', '', $price_cn);
-    if ($price_cn >= 400) {
+    if ($price_cn >= 500) {
         $price = getPrice($domain, 'USD');
-        $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
-        sendDingTalk($send_msg);
+        if ($price >= 1000) {
+            $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
+            sendDingTalk($send_msg);
+        }
     }
 }
 
