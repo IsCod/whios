@@ -44,7 +44,16 @@ function checkPrice(string $domain)
 
     $price_cn_yumi = getPrice($domain, 'RMB', 'yumi');
     $price_cn_yumi = str_replace(',', '', $price_cn_yumi);
-    if ($price_cn >= 500 || $price_cn_yumi > 500) {
+    if ($price_cn >= 600) {
+        $price = getPrice($domain, 'USD');
+        echo $domain . "\t juMing: " . $price_cn . " yuMi: \t" . $price_cn_yumi . " godaddy: \t" . $price ." \n";
+        if ($price >= 1000) {
+            $send_msg = "【重要通知】" . $domain . " goDaddy: " . $price . " juMing: " . $price_cn . " yuMi:" . $price_cn_yumi;
+            sendDingTalk($send_msg);
+            return true;
+        }
+    }
+    if ($price_cn >= 100 && $price_cn_yumi > 600) {
         $price = getPrice($domain, 'USD');
         echo $domain . "\t juMing: " . $price_cn . " yuMi: \t" . $price_cn_yumi . " godaddy: \t" . $price ." \n";
         if ($price >= 1000) {
