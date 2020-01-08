@@ -5,10 +5,11 @@ require dirname(__FILE__) . '/dingtalk.php';
 use phpWhois\Whois;
 
 // while (true) {
-    start();
+start();
 // }
 
-function start(){
+function start()
+{
     $whois = new Whois();
     $strs = range('a', 'z');
 
@@ -17,7 +18,7 @@ function start(){
             foreach ($strs as $s3) {
                 foreach ($strs as $s4) {
                     foreach ($strs as $s5) {
-                        $domain = $s1.$s2.$s3.$s4.$s5.".com";
+                        $domain = $s1 . $s2 . $s3 . $s4 . $s5 . ".com";
                         $result = $whois->lookup($domain);
                         $status = getStatus($result);
                         if (!$status) {
@@ -36,23 +37,29 @@ function start(){
     }
 }
 
-function checkPrice(string $domain){
+function checkPrice(string $domain)
+{
     $price_cn = getPrice($domain, 'RMB');
     $price_cn = str_replace(',', '', $price_cn);
-    if ($price_cn >= 500) {
+
+    $price_cn_yumi = getPrice($domain, 'RMB', 'yumi');
+    $price_cn_yumi = str_replace(',', '', $price_cn_yumi);
+    if ($price_cn >= 500 || $price_cn_yumi > 500) {
         $price = getPrice($domain, 'USD');
+        echo $domain . "\t juMing: " . $price_cn . " yuMi: \t" . $price_cn_yumi . " godaddy: \t" . $price ." \n";
         if ($price >= 1000) {
-            $send_msg ="【重要通知】" . $domain . " USD: " . $price . " RMB: " . $price_cn; 
+            $send_msg = "【重要通知】" . $domain . " goDaddy: " . $price . " juMing: " . $price_cn . " yuMi:" . $price_cn_yumi;
             sendDingTalk($send_msg);
         }
     }
 }
 
-function strToUtf8($str){
-    $encode = mb_detect_encoding($str, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'));
-    if($encode == 'UTF-8'){
+function strToUtf8($str)
+{
+    $encode = mb_detect_encoding($str, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'));
+    if ($encode == 'UTF-8') {
         return $str;
-    }else{
+    } else {
         return mb_convert_encoding($str, 'UTF-8', $encode);
     }
 }
@@ -102,11 +109,11 @@ function Rand_IP()
     return $ip1id . "." . $ip2id . "." . $ip3id . "." . $ip4id;
 }
 
-function getPrice($domain, $currency = 'USD')
+function getPrice($domain, $currency = 'USD', $su = '')
 {
     $ip = Rand_IP();
 
-    if($currency == 'USD') {
+    if ($currency == 'USD') {
         $headers = [
             'Accept: application/json, text/plain',
             'Origin: https://sg.godaddy.com',
@@ -129,14 +136,37 @@ function getPrice($domain, $currency = 'USD')
     }
 
     if ($currency == 'RMB') {
-        $url = 'http://www.wanmi.cc/gj/' . $domain;
-        $output = do_request($url, [], false, []);
-        $regex4="/<div class=\"gujia\".*?>.*?<\/div>/ism"; 
-        if(preg_match_all($regex4, $output, $matches)){ 
-            preg_match('/(¥)(.*)(元)/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
-            $return = $return[2][0] ?? '0';
-        }else{ 
-           $return = '0'; 
+        if ($su == 'yumi') {
+            $url = "http://www.yumi.com/tool/assess/domain/" . $domain;
+            $output = do_request($url, [], false, []);
+            $regex4 = "/<span class=\"col-f60 f20\".*?>.*?<\/span>/ism";
+            if (preg_match_all($regex4, $output, $matches)) {
+                preg_match('/>(¥)(.*)<\/span>/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
+                $return = $return[2][0] ?? '0';
+                if (!$return) {
+                    preg_match('/>(小于)(.*)(元)/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
+                    $return = $return[2][0] ?? '0';
+                }
+
+                if (!$return) {
+                    preg_match('/>(.*)<\/span>/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
+                    if ($return[1][0] == '域名价值巨大') {
+                        $return = '10000000';
+                    }
+                }
+            } else {
+                return 0;
+            }
+        } else {
+            $url = 'http://www.wanmi.cc/gj/' . $domain;
+            $output = do_request($url, [], false, []);
+            $regex4 = "/<div class=\"gujia\".*?>.*?<\/div>/ism";
+            if (preg_match_all($regex4, $output, $matches)) {
+                preg_match('/(¥)(.*)(元)/', $matches[0][0], $return, PREG_OFFSET_CAPTURE);
+                $return = $return[2][0] ?? '0';
+            } else {
+                $return = '0';
+            }
         }
     }
     return trim($return);
