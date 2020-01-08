@@ -54,6 +54,11 @@ function checkPrice(string $domain)
     }
 }
 
+function checkQiNum(string $domain) {
+    $url = "https://www.tianyancha.com/search?key=" . $domain;
+
+}
+
 function strToUtf8($str)
 {
     $encode = mb_detect_encoding($str, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'));
@@ -191,7 +196,7 @@ function do_request($url, $params = [], $is_post = false, $headers = [], $is_put
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     if (!empty($headers) && is_array($headers)) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }

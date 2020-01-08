@@ -28,7 +28,6 @@ function start(){
     foreach ($domains as $domain) {
         $domain .= ".com";
         echo $domain;
-
         $price_cn = getPrice($domain, 'RMB');
         $price_cn = str_replace(',', '', $price_cn);
         echo "\tprice, RMB : " . $price_cn;
@@ -267,7 +266,7 @@ function getPrice($domain, $currency = 'USD', $su = '')
                     }
                 }
             } else {
-                return 0;
+                $return = '0';
             }
         } else {
             $url = 'http://www.wanmi.cc/gj/' . $domain;
@@ -303,7 +302,7 @@ function do_request($url, $params = [], $is_post = false, $headers = [], $is_put
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     if (!empty($headers) && is_array($headers)) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
