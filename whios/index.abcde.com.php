@@ -55,7 +55,7 @@ function checkPrice(string $domain)
             return true;
         }
     }
-    if ($price_cn >= 100 && $price_cn_yumi > 600) {
+    if ($price_cn >= 200 && $price_cn_yumi > 600) {
         $price = getPrice($domain, 'USD');
         echo $domain . "\t juMing: " . $price_cn . " yuMi: \t" . $price_cn_yumi . " godaddy: \t" . $price ." \n";
         if ($price >= 1000) {
