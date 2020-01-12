@@ -41,7 +41,7 @@ function start(){
 
 
 
-        if ($price_cn >= 2000 || $price_cn_yumi >= 2000) {
+        if ($price_cn >= 2200 || $price_cn_yumi >= 3000) {
             $price = getPrice($domain, 'USD');
             echo "\tprice, USD : " . $price . "\n";
             if ($price_cn >= 4000 || $price_cn_yumi >= 4000) {
