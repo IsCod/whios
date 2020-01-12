@@ -16,16 +16,18 @@ function start()
     foreach ($strs as $s1) {
         foreach ($strs as $s2) {
             foreach ($strs as $s3) {
+                echo $s1 . $s2 . $s3 . "**\n";
                 foreach ($strs as $s4) {
                     foreach ($strs as $s5) {
                         $domain = $s1 . $s2 . $s3 . $s4 . $s5 . ".com";
                         $result = $whois->lookup($domain);
-                        $status = getStatus($result);
-                        if (!$status) {
+
+                        if (!$result) {
                             //在尝试一次
                             $result = $whois->lookup($domain);
-                            $status = getStatus($result);
                         }
+
+                        $status = getStatus($result);
                         if ($status == 'no' || $status == 'NO') {
                             checkPrice($domain);
                         }
@@ -240,6 +242,9 @@ function do_request($url, $params = [], $is_post = false, $headers = [], $is_put
 
 function getStatus($data)
 {
+    if (!isset($data['regrinfo']['registered'])) {
+        return false;
+    }
     if (in_array($data['regrinfo']['registered'], ['no', 'yes'])) {
         return $data['regrinfo']['registered'];
     }
