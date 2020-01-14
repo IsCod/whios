@@ -50,16 +50,18 @@ function start(){
                 continue;
             }
 
-            if ($price_cn >= 2000 and $price_cn_yumi >= 2000){
-                $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
-                sendDingTalk($send_msg);
-                continue;
-            }
+            if ($price > 800) {
+                if ($price_cn >= 2000 and $price_cn_yumi >= 2000){
+                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+                    sendDingTalk($send_msg);
+                    continue;
+                }
 
-            if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
-                $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
-                sendDingTalk($send_msg);
-                continue;
+                if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
+                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+                    sendDingTalk($send_msg);
+                    continue;
+                }
             }
         }else{
             echo "\n";
