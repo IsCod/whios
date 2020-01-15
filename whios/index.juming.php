@@ -32,6 +32,7 @@ function start(){
 
     $domains = array_unique($domains);
     foreach ($domains as $domain) {
+        $domain = strtoupper($domain);
         $is_sork = getSina($domain);
         $domain .= ".com";
         echo $domain;
