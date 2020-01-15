@@ -4,6 +4,13 @@ require dirname(__FILE__) . '/dingtalk.php';
 start();
 
 function start(){
+
+    //测试
+    $sina = getSina("BABA");
+    if (!$sina) {
+        sendDingTalk("【error】新浪财经错误");
+    }
+
     $html = gethtml();
     $pattern = '/>([a-z]{4})\.com<\/a>/';
     preg_match_all($pattern, $html, $matches);
@@ -24,8 +31,9 @@ function start(){
     }
 
     $domains = array_unique($domains);
-
+    $domains[] = 'BABA';
     foreach ($domains as $domain) {
+        $is_sork = getSina($domain);
         $domain .= ".com";
         echo $domain;
         $price_cn = getPrice($domain, 'RMB');
@@ -34,31 +42,59 @@ function start(){
         $price_cn_yumi = getPrice($domain, 'RMB', 'yumi');
         $price_cn_yumi = str_replace(',', '', $price_cn_yumi);
         echo "\tprice, RMB : " . $price_cn_yumi;
+        echo "\t Stock: ";
+        echo $is_sork ? "Y" : "N";
 
-        if ($price_cn >= 2000 and $price_cn_yumi >= 2000) {
-            echo " =====";
+        if ($is_sork) {
+            $price = getPrice($domain, 'USD');
+            echo "\tprice, USD : " . $price . "\n";
+            $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+
+            if ($is_sork) {
+                $send_msg .= "\t Stock: Y";   
+            }else{
+                $send_msg .= "\t Stock: N";
+            }
+            
+            sendDingTalk($send_msg);
+            continue;
         }
-
-
 
         if ($price_cn >= 2200 || $price_cn_yumi >= 3000) {
             $price = getPrice($domain, 'USD');
             echo "\tprice, USD : " . $price . "\n";
             if ($price_cn >= 4000 || $price_cn_yumi >= 4000) {
                 $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+
+                if ($is_sork) {
+                    $send_msg .= "\t Stock: Y";   
+                }else{
+                    $send_msg .= "\t Stock: N";
+                }
+                
                 sendDingTalk($send_msg);
                 continue;
             }
 
             if ($price > 800) {
                 if ($price_cn >= 2000 and $price_cn_yumi >= 2000){
-                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
+                    if ($is_sork) {
+                        $send_msg .= "\t Stock: Y";   
+                    }else{
+                        $send_msg .= "\t Stock: N";
+                    }
                     sendDingTalk($send_msg);
                     continue;
                 }
 
                 if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
-                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
+                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
+                    if ($is_sork) {
+                        $send_msg .= "\t Stock: Y";   
+                    }else{
+                        $send_msg .= "\t Stock: N";
+                    }
                     sendDingTalk($send_msg);
                     continue;
                 }
@@ -67,8 +103,6 @@ function start(){
             echo "\n";
         }
     }
-
-    sleep(60);
 }
 
 
@@ -285,6 +319,22 @@ function getPrice($domain, $currency = 'USD', $su = '')
     return trim($return);
 }
 
+function getSina($domain){
+    $domain = strtoupper($domain);
+    $time = time();
+    $time .= rand(99, 999);
+    $url = "https://suggest3.sinajs.cn/suggest/type=103&key=" .$domain. "&name=suggestdata_" . $time;
+    // $url = "https://tw.mobi.yahoo.com/finance/quote/" . $domain;
+    $output = do_request($url, [], false, []);
+    $regex4 = "/{$time}=\"(.*)\"\;/ism";
+    if (preg_match_all($regex4, $output, $matches)) {
+        if ($matches[1][0]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function do_request($url, $params = [], $is_post = false, $headers = [], $is_put = false)
 {
     if (!$is_post && !$is_put) {
@@ -304,7 +354,7 @@ function do_request($url, $params = [], $is_post = false, $headers = [], $is_put
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
     if (!empty($headers) && is_array($headers)) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
