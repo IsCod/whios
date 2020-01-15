@@ -31,7 +31,6 @@ function start(){
     }
 
     $domains = array_unique($domains);
-    $domains[] = 'BABA';
     foreach ($domains as $domain) {
         $is_sork = getSina($domain);
         $domain .= ".com";
