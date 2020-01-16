@@ -8,7 +8,7 @@ function start(){
     //测试
     $sina = getSina("BABA");
     if (!$sina) {
-        sendDingTalk("【error】新浪财经错误");
+        sendDingTalk("【error】新浪财经错误", true);
     }
 
     $html = gethtml();
@@ -56,7 +56,7 @@ function start(){
                 $send_msg .= "\t Stock: N";
             }
             
-            sendDingTalk($send_msg);
+            sendDingTalk($send_msg , true);
             continue;
         }
 
@@ -71,8 +71,10 @@ function start(){
                 }else{
                     $send_msg .= "\t Stock: N";
                 }
+
+                $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
                 
-                sendDingTalk($send_msg);
+                sendDingTalk($send_msg, $is_at);
                 continue;
             }
 
@@ -84,7 +86,9 @@ function start(){
                     }else{
                         $send_msg .= "\t Stock: N";
                     }
-                    sendDingTalk($send_msg);
+
+                    $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
+                    sendDingTalk($send_msg, $is_at);
                     continue;
                 }
 
@@ -95,7 +99,9 @@ function start(){
                     }else{
                         $send_msg .= "\t Stock: N";
                     }
-                    sendDingTalk($send_msg);
+
+                    $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
+                    sendDingTalk($send_msg, $is_at);
                     continue;
                 }
             }
