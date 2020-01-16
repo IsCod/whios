@@ -63,6 +63,9 @@ function start(){
         if ($price_cn >= 2200 || $price_cn_yumi >= 3000) {
             $price = getPrice($domain, 'USD');
             echo "\tprice, USD : " . $price . "\n";
+
+            $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 3000;
+
             if ($price_cn >= 4000 || $price_cn_yumi >= 4000) {
                 $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi; 
 
@@ -72,8 +75,6 @@ function start(){
                     $send_msg .= "\t Stock: N";
                 }
 
-                $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
-                
                 sendDingTalk($send_msg, $is_at);
                 continue;
             }
@@ -87,7 +88,6 @@ function start(){
                         $send_msg .= "\t Stock: N";
                     }
 
-                    $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
                     sendDingTalk($send_msg, $is_at);
                     continue;
                 }
@@ -100,7 +100,6 @@ function start(){
                         $send_msg .= "\t Stock: N";
                     }
 
-                    $is_at = $price_cn > 10000 || $price_cn_yumi > 10000 || $price > 1500;
                     sendDingTalk($send_msg, $is_at);
                     continue;
                 }
