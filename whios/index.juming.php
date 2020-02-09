@@ -11,27 +11,35 @@ function start(){
         sendDingTalk("【error】新浪财经错误", true);
     }
 
+    $domains = [];
     $html = gethtml();
     $pattern = '/>([a-z]{4})\.com<\/a>/';
     preg_match_all($pattern, $html, $matches);
     $ju_domains = $matches[1] ?? [];
     $ju_domains = array_unique($ju_domains);
 
+    foreach ($ju_domains as $key => $value) {
+        $domains[$value] = 'juMing';
+    }
+
     $html = getenameHtml();
     $pattern = '/<span>([a-z]{4})\.com<\/span>/';
     preg_match_all($pattern, $html, $matches);
     $en_domains = $matches[1] ?? [];
-    $domains = array_merge($ju_domains, $en_domains);
+
+    foreach ($en_domains as $key => $value) {
+        $domains[$value] = 'ename';
+    }
 
     $amHtml = getamHtml();
     $amHtml = json_decode($amHtml, true);
 
     foreach ($amHtml['data'] as $key => $value) {
-        $domains[] = str_replace(".com", '', $value['Domain']);
+        $domains[str_replace(".com", '', $value['Domain'])] = 'am';
     }
 
-    $domains = array_unique($domains);
-    foreach ($domains as $domain) {
+    
+    foreach ($domains as $domain => $p) {
         $domain = strtoupper($domain);
         $is_sork = getSina($domain);
         $domain .= ".com";
@@ -56,6 +64,8 @@ function start(){
                 $send_msg .= "\t Stock: N";
             }
             
+            $send_msg .= 'P: ' . $p;
+
             sendDingTalk($send_msg , true);
             continue;
         }
@@ -75,34 +85,23 @@ function start(){
                     $send_msg .= "\t Stock: N";
                 }
 
+                $send_msg .= 'P: ' . $p;
                 sendDingTalk($send_msg, $is_at);
                 continue;
             }
 
-            if ($price > 800) {
-                if ($price_cn >= 2000 and $price_cn_yumi >= 2000){
-                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
-                    if ($is_sork) {
-                        $send_msg .= "\t Stock: Y";   
-                    }else{
-                        $send_msg .= "\t Stock: N";
-                    }
 
-                    sendDingTalk($send_msg, $is_at);
-                    continue;
+            if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
+                $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
+                if ($is_sork) {
+                    $send_msg .= "\t Stock: Y";   
+                }else{
+                    $send_msg .= "\t Stock: N";
                 }
 
-                if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
-                    $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
-                    if ($is_sork) {
-                        $send_msg .= "\t Stock: Y";   
-                    }else{
-                        $send_msg .= "\t Stock: N";
-                    }
-
-                    sendDingTalk($send_msg, $is_at);
-                    continue;
-                }
+                $send_msg .= 'P: ' . $p;
+                sendDingTalk($send_msg, $is_at);
+                continue;
             }
         }else{
             echo "\n";
