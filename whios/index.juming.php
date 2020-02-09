@@ -91,7 +91,7 @@ function start(){
             }
 
 
-            if ($price >= 1500 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
+            if ($price >= 2000 and ($price_cn >= 2000 || $price_cn_yumi >= 2000)) {
                 $send_msg = $domain . " Godaddy: " . $price . " juMing: " . $price_cn . ' yuMi: ' . $price_cn_yumi;
                 if ($is_sork) {
                     $send_msg .= "\t Stock: Y";   
